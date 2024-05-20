@@ -18,6 +18,12 @@ jobs:
         docker build -f ./Dockerfile -t local/example .
         echo -n "verifying images:"
         docker images
+    - name: Download Istio
+      run:
+        curl -L https://istio.io/downloadIstio | sh -
+    - name: install demo profile
+      run:
+        ./istio-1.22.0/bin/istioctl install --set profile=demo -y
     - name: enable istio-injection on default namespace
       run:
         kubectl label namespace default istio-injection=enabled
