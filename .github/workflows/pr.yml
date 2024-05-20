@@ -21,9 +21,12 @@ jobs:
     - name: enable istio-injection on default namespace
       run:
         kubectl label namespace default istio-injection=enabled
-    - name: Deploy to minikube
+    - name: Deploy bookinfo app to minikube
       run:
         kubectl apply -f bookinfo.yaml
+    - name: Create gateway
+      run:
+        kubectl apply -f bookinfo-gateway.yaml
     - name: Test service URLs
       run: |
         minikube service list
