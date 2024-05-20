@@ -23,7 +23,7 @@ jobs:
         kubectl label namespace default istio-injection=enabled
     - name: Deploy to minikube
       run:
-        kubectl apply -f deploy-to-minikube.yaml
+        kubectl apply -f bookinfo.yaml
     - name: Test service URLs
       run: |
         minikube service list
