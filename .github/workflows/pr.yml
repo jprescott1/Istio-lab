@@ -17,10 +17,12 @@ jobs:
         eval $(minikube -p minikube docker-env)
         docker build -f ./Dockerfile -t local/example .
         echo -n "verifying images:"
-        docker images        
-    - name: Deploy to minikube
+        docker images
+    - name: enable istio-injection on default namespace
       run:
         kubectl label namespace default istio-injection=enabled
+    - name: Deploy to minikube
+      run:
         kubectl apply -f deploy-to-minikube.yaml
     - name: Test service URLs
       run: |
