@@ -20,6 +20,7 @@ jobs:
         docker images        
     - name: Deploy to minikube
       run:
+        kubectl label namespace default istio-injection=enabled
         kubectl apply -f deploy-to-minikube.yaml
     - name: Test service URLs
       run: |
