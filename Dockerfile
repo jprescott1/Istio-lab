@@ -1,34 +1,25 @@
-FROM ubuntu:noble
+# syntax=docker/dockerfile:1
 
-ENV DEBIAN_FRONTEND=noninteractive
+FROM golang:1.21
 
-# Do not add more stuff to this list that isn't small or critically useful.
-# If you occasionally need something on the container do
-# sudo apt-get update && apt-get whichever
+# Set destination for COPY
+WORKDIR /app
 
-# hadolint ignore=DL3005,DL3008
-RUN apt-get update && \
-  apt-get install --no-install-recommends -y \
-  ca-certificates \
-  curl \
-  iptables \
-  iproute2 \
-  iputils-ping \
-  knot-dnsutils \
-  netcat-openbsd \
-  tcpdump \
-  conntrack \
-  bsdmainutils \
-  net-tools \
-  lsof \
-  sudo \
-  && update-ca-certificates \
-  && apt-get upgrade -y \
-  && apt-get clean \
-  && rm -rf  /var/log/*log /var/lib/apt/lists/* /var/log/apt/* /var/lib/dpkg/*-old /var/cache/debconf/*-old \
-  && update-alternatives --set iptables /usr/sbin/iptables-legacy \
-  && update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
+# Download Go modules
+COPY go.mod go.sum ./
+RUN go mod download
 
-# Sudoers used to allow tcpdump and other debug utilities.
-RUN useradd -m --uid 1337 istio-proxy && \
-  echo "istio-proxy ALL=NOPASSWD: ALL" >> /etc/sudoers
+# Copy the source code. Note the slash at the end, as explained in
+# https://docs.docker.com/reference/dockerfile/#copy
+COPY *.go ./
+
+# Build
+RUN CGO_ENABLED=0 GOOS=linux go build -o /gopher-hello
+
+# Optional:
+# To bind to a TCP port, runtime parameters must be supplied to the docker command.
+# But we can document in the Dockerfile what ports
+# the application is going to listen on by default.
+# https://docs.docker.com/reference/dockerfile/#expose
+EXPOSE 80
+CMD ["/gopher-hello"]
