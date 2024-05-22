@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gopher-hello
+  labels:
+    app: gopher-hello
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gopher-hello
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: gopher-hello
+    spec:
+      containers:
+      - name: gopher-hello
+        image: registry.digitalocean.com/jimmysjoint/istio-lab:032ccc5
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: 100m
+          limits:
+            cpu: 100m
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gopher-hello-service
+spec:
+  type: LoadBalancer
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 80
+  selector:
+    app: gopher-hello
