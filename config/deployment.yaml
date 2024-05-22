@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: gopher-hello
-        image: registry.digitalocean.com/jimmysjoint/istio-lab
+        image: istio-lab
         ports:
         - containerPort: 80
         resources:
