@@ -31,7 +31,7 @@ jobs:
         run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|istio-lab|registry.digitalocean.com/jimmysjoint/istio-lab:'${TAG}'|' $GITHUB_WORKSPACE/config/deployment.yaml
 
       - name: Save DigitalOcean kubeconfig with short-lived credentials
-        run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 <cluster-name>
+        run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 terra-sfo3
 
       - name: Deploy to DigitalOcean Kubernetes
         run: kubectl apply -f $GITHUB_WORKSPACE/config/deployment.yaml
